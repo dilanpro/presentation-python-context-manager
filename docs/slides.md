@@ -5,22 +5,18 @@
 ---
 <!-- .slide: data-auto-animate -->
 
-# Context Managers
-#### And Beyond
+#### A context manager is an object that properly sets up and tears down a resource.
 
 ---
 <!-- .slide: data-auto-animate -->
 
-## What is a Context Manager?
-
-- Manages setup and cleanup automatically
-- Commonly used with the `with` statement
+#### It's commonly used with `with` statement.
 
 ---
 <!-- .slide: data-auto-animate -->
 
-## Example
 
 ```python
-with open("file.txt") as f:
-    data = f.read()
+with open("data.txt", "r") as file:
+    data = file.read()
+```

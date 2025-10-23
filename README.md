@@ -2,7 +2,7 @@
 
 
 Welcome to this **Python Context Manager Presentation**!
-This repository is designed to be **viewed directly in your browser**. [Click Here](https://<username>.github.io/<repo>/) to open the presentation.
+This repository is designed to be **viewed directly in your browser**. [Click Here](https://the-perfect-developer.github.io/python-context-manager/) to open the presentation.
 
 ---
 
