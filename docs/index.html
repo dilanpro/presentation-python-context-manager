@@ -53,42 +53,50 @@
 				border: 1px solid #333;
 			}
 
-			/* Mac-style window controls - DEFAULT for ALL code blocks */
-			.hljs::before {
-				content: "";
-				position: absolute;
-				top: 12px;
-				left: 16px;
-				width: 12px;
-				height: 12px;
-				border-radius: 50%;
-				background: #ff5f57;
-				box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #28ca42;
+			/* Remove all pseudo-elements to prevent duplication */
+			.hljs::before,
+			.hljs::after {
+				display: none !important;
 			}
 
-			/* File tab - DEFAULT for ALL code blocks */
-			.hljs::after {
-				content: "The Perfect Developer Examples";
+			/* Window header with controls and filename */
+			.code-window-header {
 				position: absolute;
-				top: 8px;
-				left: 80px;
-				right: 16px;
-				height: 24px;
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 32px;
 				background: #2d2d30;
-				border-radius: 4px 4px 0 0;
-				font-size: 12px;
-				color: #cccccc;
+				border-radius: 8px 8px 0 0;
 				display: flex;
 				align-items: center;
 				padding: 0 12px;
 				font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono",
 					Consolas, "Courier New", monospace;
+				font-size: 12px;
+				color: #cccccc;
+				z-index: 10;
 			}
 
-			/* Custom filename support - overrides default name */
-			.custom-filename.hljs::after,
-			.terminal-title.hljs::after {
-				content: var(--custom-filename) !important;
+			/* Mac-style window controls */
+			.window-controls {
+				display: flex;
+				gap: 8px;
+				margin-right: 12px;
+			}
+
+			.window-controls span {
+				width: 12px;
+				height: 12px;
+				border-radius: 50%;
+			}
+
+			.window-controls .close { background: #ff5f57; }
+			.window-controls .minimize { background: #ffbd2e; }
+			.window-controls .maximize { background: #28ca42; }
+
+			.filename {
+				flex: 1;
 			}
 
 			/* Line numbers styling */
@@ -207,69 +215,79 @@
 			// Custom filename support
 			Reveal.addEventListener("ready", function () {
 				updateCodeBlockFilenames();
+				// Also run after delays to catch late-loading content
+				setTimeout(updateCodeBlockFilenames, 200);
+				setTimeout(updateCodeBlockFilenames, 500);
 			});
 
 			Reveal.addEventListener("slidechanged", function () {
 				updateCodeBlockFilenames();
 			});
 
+			// Run immediately for any existing content
+			setTimeout(updateCodeBlockFilenames, 100);
+			
+			// Also run when DOM is loaded
+			document.addEventListener('DOMContentLoaded', function() {
+				updateCodeBlockFilenames();
+			});
+
 			function updateCodeBlockFilenames() {
-				// Handle code blocks with custom filenames
-				document
-					.querySelectorAll("pre[data-filename]")
-					.forEach(function (pre) {
-						const filename = pre.getAttribute("data-filename");
-						const codeBlock = pre.querySelector("code");
-						if (codeBlock) {
-							codeBlock.style.setProperty(
-								"--custom-filename",
-								`"${filename}"`
-							);
-							codeBlock.classList.add("custom-filename");
-						}
-					});
+				// Remove any existing headers first
+				document.querySelectorAll('.code-window-header').forEach(header => header.remove());
 
-				// Handle code blocks inside sections with data-filename
-				document
-					.querySelectorAll("section[data-filename] pre code")
-					.forEach(function (code) {
-						const section = code.closest("section");
-						const filename = section.getAttribute("data-filename");
-						code.style.setProperty(
-							"--custom-filename",
-							`"${filename}"`
-						);
-						code.classList.add("custom-filename");
-					});
-
-				// Force terminal titles for bash/shell/console/terminal
-				document
-					.querySelectorAll(
-						"code.language-bash, code.language-shell, code.language-console, code.language-terminal"
-					)
-					.forEach(function (code) {
-						code.style.setProperty(
-							"--custom-filename",
-							'"Terminal"'
-						);
-						code.classList.add("terminal-title");
-					});
-
-				// Also check for classes that might be applied differently by highlight.js
+				// Handle all code blocks (both with and without .hljs class)
 				document.querySelectorAll("pre code").forEach(function (code) {
-					const classList = code.className;
-					if (
-						classList.includes("bash") ||
-						classList.includes("shell") ||
-						classList.includes("console") ||
-						classList.includes("terminal")
-					) {
-						code.style.setProperty(
-							"--custom-filename",
-							'"Terminal"'
-						);
-						code.classList.add("terminal-title");
+					// Skip if this code block already has a header
+					if (code.parentElement.querySelector('.code-window-header')) {
+						return;
 					}
+
+					const pre = code.closest('pre');
+					const section = code.closest('section');
+					
+					// Determine filename
+					let filename = "The Perfect Developer";
+					
+					// Check for custom filename from data attribute
+					if (pre && pre.getAttribute('data-filename')) {
+						filename = pre.getAttribute('data-filename');
+					} else if (section && section.getAttribute('data-filename')) {
+						filename = section.getAttribute('data-filename');
+					}
+					
+					// Check if it's a terminal block
+					const dataLang = pre ? pre.getAttribute('data-language') : '';
+					const classList = code.className;
+					const isTerminal = (dataLang && dataLang.includes('bash')) || 
+									 classList.includes('bash') || 
+									 classList.includes('shell') || 
+									 classList.includes('console') || 
+									 classList.includes('terminal');
+					
+					if (isTerminal) {
+						filename = "Terminal";
+						// Hide line numbers for terminal
+						const lineNumbers = code.querySelectorAll('.hljs-ln-numbers');
+						lineNumbers.forEach(ln => ln.style.display = 'none');
+					}
+					
+					// Create window header
+					const header = document.createElement('div');
+					header.className = 'code-window-header';
+					header.innerHTML = `
+						<div class="window-controls">
+							<span class="close"></span>
+							<span class="minimize"></span>
+							<span class="maximize"></span>
+						</div>
+						<div class="filename">${filename}</div>
+					`;
+					
+					// Insert header into the code container
+					const container = code.parentElement;
+					container.style.position = 'relative';
+					container.insertBefore(header, code);
 				});
 			}
 		</script>
