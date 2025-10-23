@@ -86,26 +86,66 @@
 			}
 
 			/* Language-specific file extensions */
-			.language-python .hljs::after { content: "main.py"; }
-			.language-javascript .hljs::after { content: "app.js"; }
-			.language-typescript .hljs::after { content: "app.ts"; }
-			.language-java .hljs::after { content: "Main.java"; }
-			.language-cpp .hljs::after { content: "main.cpp"; }
-			.language-c .hljs::after { content: "main.c"; }
-			.language-csharp .hljs::after { content: "Program.cs"; }
-			.language-php .hljs::after { content: "index.php"; }
-			.language-ruby .hljs::after { content: "main.rb"; }
-			.language-go .hljs::after { content: "main.go"; }
-			.language-rust .hljs::after { content: "main.rs"; }
-			.language-swift .hljs::after { content: "main.swift"; }
-			.language-kotlin .hljs::after { content: "Main.kt"; }
-			.language-html .hljs::after { content: "index.html"; }
-			.language-css .hljs::after { content: "styles.css"; }
-			.language-scss .hljs::after { content: "styles.scss"; }
-			.language-json .hljs::after { content: "config.json"; }
-			.language-yaml .hljs::after { content: "config.yaml"; }
-			.language-xml .hljs::after { content: "config.xml"; }
-			.language-sql .hljs::after { content: "query.sql"; }
+			.language-python .hljs::after {
+				content: "main.py";
+			}
+			.language-javascript .hljs::after {
+				content: "app.js";
+			}
+			.language-typescript .hljs::after {
+				content: "app.ts";
+			}
+			.language-java .hljs::after {
+				content: "Main.java";
+			}
+			.language-cpp .hljs::after {
+				content: "main.cpp";
+			}
+			.language-c .hljs::after {
+				content: "main.c";
+			}
+			.language-csharp .hljs::after {
+				content: "Program.cs";
+			}
+			.language-php .hljs::after {
+				content: "index.php";
+			}
+			.language-ruby .hljs::after {
+				content: "main.rb";
+			}
+			.language-go .hljs::after {
+				content: "main.go";
+			}
+			.language-rust .hljs::after {
+				content: "main.rs";
+			}
+			.language-swift .hljs::after {
+				content: "main.swift";
+			}
+			.language-kotlin .hljs::after {
+				content: "Main.kt";
+			}
+			.language-html .hljs::after {
+				content: "index.html";
+			}
+			.language-css .hljs::after {
+				content: "styles.css";
+			}
+			.language-scss .hljs::after {
+				content: "styles.scss";
+			}
+			.language-json .hljs::after {
+				content: "config.json";
+			}
+			.language-yaml .hljs::after {
+				content: "config.yaml";
+			}
+			.language-xml .hljs::after {
+				content: "config.xml";
+			}
+			.language-sql .hljs::after {
+				content: "query.sql";
+			}
 
 			/* Custom filename support - overrides language-specific names */
 			.custom-filename.hljs::after {
@@ -226,37 +266,47 @@
 				autoAnimate: true,
 				highlight: {
 					highlightOnLoad: true,
-					lineNumbers: true
-				}
+					lineNumbers: true,
+				},
 			});
 
 			// Custom filename support
-			Reveal.addEventListener('ready', function() {
+			Reveal.addEventListener("ready", function () {
 				updateCodeBlockFilenames();
 			});
 
-			Reveal.addEventListener('slidechanged', function() {
+			Reveal.addEventListener("slidechanged", function () {
 				updateCodeBlockFilenames();
 			});
 
 			function updateCodeBlockFilenames() {
 				// Handle code blocks with custom filenames
-				document.querySelectorAll('pre[data-filename]').forEach(function(pre) {
-					const filename = pre.getAttribute('data-filename');
-					const codeBlock = pre.querySelector('code');
-					if (codeBlock) {
-						codeBlock.style.setProperty('--custom-filename', `"${filename}"`);
-						codeBlock.classList.add('custom-filename');
-					}
-				});
+				document
+					.querySelectorAll("pre[data-filename]")
+					.forEach(function (pre) {
+						const filename = pre.getAttribute("data-filename");
+						const codeBlock = pre.querySelector("code");
+						if (codeBlock) {
+							codeBlock.style.setProperty(
+								"--custom-filename",
+								`"${filename}"`
+							);
+							codeBlock.classList.add("custom-filename");
+						}
+					});
 
 				// Handle code blocks inside sections with data-filename
-				document.querySelectorAll('section[data-filename] pre code').forEach(function(code) {
-					const section = code.closest('section');
-					const filename = section.getAttribute('data-filename');
-					code.style.setProperty('--custom-filename', `"${filename}"`);
-					code.classList.add('custom-filename');
-				});
+				document
+					.querySelectorAll("section[data-filename] pre code")
+					.forEach(function (code) {
+						const section = code.closest("section");
+						const filename = section.getAttribute("data-filename");
+						code.style.setProperty(
+							"--custom-filename",
+							`"${filename}"`
+						);
+						code.classList.add("custom-filename");
+					});
 			}
 		</script>
 	</body>
