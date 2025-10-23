@@ -2,7 +2,23 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<title>My Presentation</title>
+
+		<!-- Title -->
+		<script>
+			try {
+				const path = window.location.pathname;
+				let repoName = path.split("/").filter(Boolean).pop() || "Home";
+				repoName = repoName.replace(/[-_]/g, " ");
+				repoName = repoName.replace(/\b\w/g, (c) => c.toUpperCase());
+
+				document.title =
+					repoName + " | " + "The Perfect Developer | Github";
+			} catch (error) {
+				document.title = "The Perfect Developer | Github";
+				console.error("Error setting title:", error);
+			}
+		</script>
+
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<!-- Reveal.js CSS -->
