@@ -13,10 +13,15 @@
 #### It's commonly used with `with` statement.
 
 ---
-<!-- .slide: data-auto-animate -->
+<!-- .slide: data-auto-animate data-filename="main_context.py" -->
 
 
 ```python
 with open("data.txt", "r") as file:
     data = file.read()
+```
+
+```bash
+$ python3 main.py
+Context manager demo executed successfully!
 ```

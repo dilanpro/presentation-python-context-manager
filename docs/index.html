@@ -42,7 +42,7 @@
 				font-size: 1.5em;
 			}
 
-			/* VS Code-like editor styling */
+			/* VS Code-like editor styling - DEFAULT for ALL code blocks */
 			.hljs {
 				background: #1e1e1e !important;
 				border-radius: 8px;
@@ -53,7 +53,7 @@
 				border: 1px solid #333;
 			}
 
-			/* Mac-style window controls */
+			/* Mac-style window controls - DEFAULT for ALL code blocks */
 			.hljs::before {
 				content: "";
 				position: absolute;
@@ -66,9 +66,9 @@
 				box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #28ca42;
 			}
 
-			/* File tab */
+			/* File tab - DEFAULT for ALL code blocks */
 			.hljs::after {
-				content: "theperfectdeveloper.pro";
+				content: "main.py";
 				position: absolute;
 				top: 8px;
 				left: 80px;
@@ -83,6 +83,33 @@
 				padding: 0 12px;
 				font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono",
 					Consolas, "Courier New", monospace;
+			}
+
+			/* Language-specific file extensions */
+			.language-python .hljs::after { content: "main.py"; }
+			.language-javascript .hljs::after { content: "app.js"; }
+			.language-typescript .hljs::after { content: "app.ts"; }
+			.language-java .hljs::after { content: "Main.java"; }
+			.language-cpp .hljs::after { content: "main.cpp"; }
+			.language-c .hljs::after { content: "main.c"; }
+			.language-csharp .hljs::after { content: "Program.cs"; }
+			.language-php .hljs::after { content: "index.php"; }
+			.language-ruby .hljs::after { content: "main.rb"; }
+			.language-go .hljs::after { content: "main.go"; }
+			.language-rust .hljs::after { content: "main.rs"; }
+			.language-swift .hljs::after { content: "main.swift"; }
+			.language-kotlin .hljs::after { content: "Main.kt"; }
+			.language-html .hljs::after { content: "index.html"; }
+			.language-css .hljs::after { content: "styles.css"; }
+			.language-scss .hljs::after { content: "styles.scss"; }
+			.language-json .hljs::after { content: "config.json"; }
+			.language-yaml .hljs::after { content: "config.yaml"; }
+			.language-xml .hljs::after { content: "config.xml"; }
+			.language-sql .hljs::after { content: "query.sql"; }
+
+			/* Custom filename support - overrides language-specific names */
+			.custom-filename.hljs::after {
+				content: var(--custom-filename) !important;
 			}
 
 			/* Line numbers styling */
@@ -100,6 +127,74 @@
 					Consolas, "Courier New", monospace !important;
 				font-size: 0.9em !important;
 				line-height: 1.5 !important;
+			}
+
+			/* Terminal-specific styling for bash/shell/console blocks */
+			.language-bash .hljs,
+			.language-shell .hljs,
+			.language-console .hljs,
+			.language-terminal .hljs {
+				background: #0c0c0c !important;
+				border: 1px solid #333;
+				border-radius: 8px;
+				padding: 40px 20px 20px 20px !important;
+				position: relative;
+				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+			}
+
+			/* Terminal window controls (same red/yellow/green but for terminal) */
+			.language-bash .hljs::before,
+			.language-shell .hljs::before,
+			.language-console .hljs::before,
+			.language-terminal .hljs::before {
+				content: "";
+				position: absolute;
+				top: 12px;
+				left: 16px;
+				width: 12px;
+				height: 12px;
+				border-radius: 50%;
+				background: #ff5f57;
+				box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #28ca42;
+			}
+
+			/* Terminal title bar */
+			.language-bash .hljs::after,
+			.language-shell .hljs::after,
+			.language-console .hljs::after,
+			.language-terminal .hljs::after {
+				content: "Terminal — zsh — 80×24";
+				position: absolute;
+				top: 8px;
+				left: 80px;
+				right: 16px;
+				height: 24px;
+				background: #1e1e1e;
+				border-radius: 4px 4px 0 0;
+				font-size: 12px;
+				color: #cccccc;
+				display: flex;
+				align-items: center;
+				padding: 0 12px;
+				font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono",
+					Consolas, "Courier New", monospace;
+			}
+
+			/* Terminal text styling */
+			.language-bash,
+			.language-shell,
+			.language-console,
+			.language-terminal {
+				color: #00ff00 !important;
+				background: #0c0c0c !important;
+			}
+
+			/* No line numbers for terminal */
+			.language-bash .hljs-ln-numbers,
+			.language-shell .hljs-ln-numbers,
+			.language-console .hljs-ln-numbers,
+			.language-terminal .hljs-ln-numbers {
+				display: none !important;
 			}
 		</style>
 	</head>
@@ -131,9 +226,38 @@
 				autoAnimate: true,
 				highlight: {
 					highlightOnLoad: true,
-					lineNumbers: true,
-				},
+					lineNumbers: true
+				}
 			});
+
+			// Custom filename support
+			Reveal.addEventListener('ready', function() {
+				updateCodeBlockFilenames();
+			});
+
+			Reveal.addEventListener('slidechanged', function() {
+				updateCodeBlockFilenames();
+			});
+
+			function updateCodeBlockFilenames() {
+				// Handle code blocks with custom filenames
+				document.querySelectorAll('pre[data-filename]').forEach(function(pre) {
+					const filename = pre.getAttribute('data-filename');
+					const codeBlock = pre.querySelector('code');
+					if (codeBlock) {
+						codeBlock.style.setProperty('--custom-filename', `"${filename}"`);
+						codeBlock.classList.add('custom-filename');
+					}
+				});
+
+				// Handle code blocks inside sections with data-filename
+				document.querySelectorAll('section[data-filename] pre code').forEach(function(code) {
+					const section = code.closest('section');
+					const filename = section.getAttribute('data-filename');
+					code.style.setProperty('--custom-filename', `"${filename}"`);
+					code.classList.add('custom-filename');
+				});
+			}
 		</script>
 	</body>
 </html>
