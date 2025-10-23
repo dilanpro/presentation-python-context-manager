@@ -16,9 +16,10 @@
 <!-- .slide: data-auto-animate data-filename="main_context.py"-->
 
 
-```python
+```python[1-2|3]
 with open("data.txt", "r") as file:
     data = file.read()
+print("Done!")
 ```
 
 ```bash
