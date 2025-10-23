@@ -128,10 +128,23 @@
 			/* Line numbers styling */
 			.hljs-ln-numbers {
 				color: #858585 !important;
-				padding-right: 20px !important;
+				padding-right: 40px !important;
 				border-right: 1px solid #333 !important;
-				margin-right: 32px !important;
+				margin-right: 20px !important;
 				user-select: none;
+			}
+
+			/* Additional spacing for line numbers - higher specificity */
+			.reveal .hljs-ln-numbers,
+			pre code .hljs-ln-numbers,
+			.hljs .hljs-ln-numbers {
+				padding-right: 40px !important;
+				margin-right: 20px !important;
+			}
+
+			/* Ensure spacing for line number code content */
+			.hljs-ln-code {
+				padding-left: 20px !important;
 			}
 
 			/* Better code font */
