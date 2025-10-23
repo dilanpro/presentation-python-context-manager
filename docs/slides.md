@@ -16,13 +16,11 @@
 <!-- .slide: data-auto-animate data-filename="main_context.py"-->
 
 
-```python[1-2|3]
+```python[1,3|2]
 with open("data.txt", "r") as file:
     data = file.read()
 print("Done!")
 ```
 
-```bash
-$ python3 main.py
-Context manager demo executed successfully!
-```
+
+Note: Remind the audience why automatic cleanup prevents resource leaks.
