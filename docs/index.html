@@ -68,7 +68,7 @@
 
 			/* File tab - DEFAULT for ALL code blocks */
 			.hljs::after {
-				content: "The Perfect Developer";
+				content: "The Perfect Developer Examples";
 				position: absolute;
 				top: 8px;
 				left: 80px;
@@ -86,7 +86,8 @@
 			}
 
 			/* Custom filename support - overrides default name */
-			.custom-filename.hljs::after {
+			.custom-filename.hljs::after,
+			.terminal-title.hljs::after {
 				content: var(--custom-filename) !important;
 			}
 
@@ -136,18 +137,22 @@
 				box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #28ca42;
 			}
 
-			/* Terminal title bar */
+			/* Terminal title bar - Higher specificity to override default */
+			pre.language-bash code.hljs::after,
+			pre.language-shell code.hljs::after,
+			pre.language-console code.hljs::after,
+			pre.language-terminal code.hljs::after,
 			.language-bash .hljs::after,
 			.language-shell .hljs::after,
 			.language-console .hljs::after,
 			.language-terminal .hljs::after {
-				content: "Terminal";
-				position: absolute;
+				content: "Terminal" !important;
+				position: absolute !important;
 				top: 8px;
 				left: 80px;
 				right: 16px;
 				height: 24px;
-				background: #2d2d30;
+				background: #2d2d30 !important;
 				border-radius: 4px 4px 0 0;
 				font-size: 12px;
 				color: #cccccc;
@@ -236,6 +241,36 @@
 						);
 						code.classList.add("custom-filename");
 					});
+
+				// Force terminal titles for bash/shell/console/terminal
+				document
+					.querySelectorAll(
+						"code.language-bash, code.language-shell, code.language-console, code.language-terminal"
+					)
+					.forEach(function (code) {
+						code.style.setProperty(
+							"--custom-filename",
+							'"Terminal"'
+						);
+						code.classList.add("terminal-title");
+					});
+
+				// Also check for classes that might be applied differently by highlight.js
+				document.querySelectorAll("pre code").forEach(function (code) {
+					const classList = code.className;
+					if (
+						classList.includes("bash") ||
+						classList.includes("shell") ||
+						classList.includes("console") ||
+						classList.includes("terminal")
+					) {
+						code.style.setProperty(
+							"--custom-filename",
+							'"Terminal"'
+						);
+						code.classList.add("terminal-title");
+					}
+				});
 			}
 		</script>
 	</body>
