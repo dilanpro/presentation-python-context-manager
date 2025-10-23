@@ -48,9 +48,29 @@
 				border-radius: 8px;
 				position: relative;
 				padding: 40px 20px 20px 20px !important;
-				margin: 20px 0;
+				margin: 40px 0 20px 0;
 				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 				border: 1px solid #333;
+			}
+
+			/* Ensure consistent styling for all pre code blocks */
+			pre code {
+				border-radius: 8px !important;
+				padding: 40px 20px 20px 20px !important;
+				margin: 40px 0 20px 0 !important;
+			}
+
+			/* Fix for reveal.js code blocks to maintain consistent styling */
+			.reveal pre {
+				border-radius: 8px !important;
+				margin: 40px 0 20px 0 !important;
+			}
+
+			.reveal pre code {
+				border-radius: 8px !important;
+				padding: 40px 20px 20px 20px !important;
+				margin: 0 !important;
+				max-height: none !important;
 			}
 
 			/* Remove all pseudo-elements to prevent duplication */
@@ -91,9 +111,15 @@
 				border-radius: 50%;
 			}
 
-			.window-controls .close { background: #ff5f57; }
-			.window-controls .minimize { background: #ffbd2e; }
-			.window-controls .maximize { background: #28ca42; }
+			.window-controls .close {
+				background: #ff5f57;
+			}
+			.window-controls .minimize {
+				background: #ffbd2e;
+			}
+			.window-controls .maximize {
+				background: #28ca42;
+			}
 
 			.filename {
 				flex: 1;
@@ -102,9 +128,9 @@
 			/* Line numbers styling */
 			.hljs-ln-numbers {
 				color: #858585 !important;
-				padding-right: 16px !important;
+				padding-right: 20px !important;
 				border-right: 1px solid #333 !important;
-				margin-right: 16px !important;
+				margin-right: 24px !important;
 				user-select: none;
 			}
 
@@ -123,10 +149,20 @@
 			.language-terminal .hljs {
 				background: #1e1e1e !important;
 				border: 1px solid #333;
-				border-radius: 8px;
+				border-radius: 8px !important;
 				padding: 40px 20px 20px 20px !important;
 				position: relative;
 				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+				margin: 40px 0 20px 0 !important;
+			}
+
+			/* Ensure terminal pre blocks also have consistent styling */
+			pre.language-bash,
+			pre.language-shell,
+			pre.language-console,
+			pre.language-terminal {
+				border-radius: 8px !important;
+				margin: 40px 0 20px 0 !important;
 			}
 
 			/* Terminal window controls (same red/yellow/green but for terminal) */
@@ -226,55 +262,68 @@
 
 			// Run immediately for any existing content
 			setTimeout(updateCodeBlockFilenames, 100);
-			
+
 			// Also run when DOM is loaded
-			document.addEventListener('DOMContentLoaded', function() {
+			document.addEventListener("DOMContentLoaded", function () {
 				updateCodeBlockFilenames();
 			});
 
 			function updateCodeBlockFilenames() {
 				// Remove any existing headers first
-				document.querySelectorAll('.code-window-header').forEach(header => header.remove());
+				document
+					.querySelectorAll(".code-window-header")
+					.forEach((header) => header.remove());
 
 				// Handle all code blocks (both with and without .hljs class)
 				document.querySelectorAll("pre code").forEach(function (code) {
 					// Skip if this code block already has a header
-					if (code.parentElement.querySelector('.code-window-header')) {
+					if (
+						code.parentElement.querySelector(".code-window-header")
+					) {
 						return;
 					}
 
-					const pre = code.closest('pre');
-					const section = code.closest('section');
-					
+					const pre = code.closest("pre");
+					const section = code.closest("section");
+
 					// Determine filename
 					let filename = "The Perfect Developer";
-					
+
 					// Check for custom filename from data attribute
-					if (pre && pre.getAttribute('data-filename')) {
-						filename = pre.getAttribute('data-filename');
-					} else if (section && section.getAttribute('data-filename')) {
-						filename = section.getAttribute('data-filename');
+					if (pre && pre.getAttribute("data-filename")) {
+						filename = pre.getAttribute("data-filename");
+					} else if (
+						section &&
+						section.getAttribute("data-filename")
+					) {
+						filename = section.getAttribute("data-filename");
 					}
-					
+
 					// Check if it's a terminal block
-					const dataLang = pre ? pre.getAttribute('data-language') : '';
+					const dataLang = pre
+						? pre.getAttribute("data-language")
+						: "";
 					const classList = code.className;
-					const isTerminal = (dataLang && dataLang.includes('bash')) || 
-									 classList.includes('bash') || 
-									 classList.includes('shell') || 
-									 classList.includes('console') || 
-									 classList.includes('terminal');
-					
+					const isTerminal =
+						(dataLang && dataLang.includes("bash")) ||
+						classList.includes("bash") ||
+						classList.includes("shell") ||
+						classList.includes("console") ||
+						classList.includes("terminal");
+
 					if (isTerminal) {
 						filename = "Terminal";
 						// Hide line numbers for terminal
-						const lineNumbers = code.querySelectorAll('.hljs-ln-numbers');
-						lineNumbers.forEach(ln => ln.style.display = 'none');
+						const lineNumbers =
+							code.querySelectorAll(".hljs-ln-numbers");
+						lineNumbers.forEach(
+							(ln) => (ln.style.display = "none")
+						);
 					}
-					
+
 					// Create window header
-					const header = document.createElement('div');
-					header.className = 'code-window-header';
+					const header = document.createElement("div");
+					header.className = "code-window-header";
 					header.innerHTML = `
 						<div class="window-controls">
 							<span class="close"></span>
@@ -283,10 +332,10 @@
 						</div>
 						<div class="filename">${filename}</div>
 					`;
-					
+
 					// Insert header into the code container
 					const container = code.parentElement;
-					container.style.position = 'relative';
+					container.style.position = "relative";
 					container.insertBefore(header, code);
 				});
 			}
